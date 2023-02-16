@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\MCC75NET.props" />
+</Project>
