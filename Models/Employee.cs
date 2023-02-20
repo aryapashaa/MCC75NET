@@ -7,20 +7,27 @@ namespace MCC75NET.Models;
 [Table("tb_m_employees")]
 public class Employee
 {
+    [MaxLength(5), MinLength(5, ErrorMessage = "Harus 5 karakter")]
     [Key, Column("nik", TypeName = "nchar(5)")]
     public string NIK { get; set; }
+    [Display(Name = "First Name")]
     [Required, Column("first_name"), MaxLength(50)]
     public string FirstName { get; set; }
+    [Display(Name = "Last Name")]
     [Column("last_name"), MaxLength(50)]
     public string? LastName { get; set; }
+    [Display(Name = "Birth Date")]
     [Required, Column("birth_date")]
     public DateTime BirthDate { get; set; }
     [Required, Column("gender")]
     public GenderEnum Gender { get; set; }
+    [Display(Name = "Hiring Date")]
     [Required, Column("hiring_date")]
     public DateTime HiringDate { get; set; } = DateTime.Now;
+    [Display(Name = "E-Mail")]
     [Required, Column("email"), MaxLength(50)]
     public string Email { get; set; }
+    [Display(Name = "Phone Number")]
     [Column("phone_number"), MaxLength(20)]
     public string? PhoneNumber { get; set; }
 
