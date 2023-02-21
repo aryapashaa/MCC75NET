@@ -197,7 +197,7 @@ public class AccountController : Controller
     // Validasi Email exist?, Password equal?
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async IActionResult Login(LoginVM loginVM)
+    public IActionResult Login(LoginVM loginVM)
     {
         if (ModelState.IsValid)
         {
