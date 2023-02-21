@@ -1,5 +1,6 @@
 ﻿using MCC75NET.Contexts;
 using MCC75NET.Models;
+using MCC75NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +17,16 @@ public class ProfilingController : Controller
 
     public IActionResult Index()
     {
-        var profilings = context.Profilings.ToList();
-        return View(profilings);
+        //var profilings = context.Profilings.ToList();
+        var results = context.Profilings.Join(
+            context.Educations,
+            p => p.EducationId,
+            e => e.Id,
+            (p, e) => new Profiling
+            {
+                EducationId = e.Id,
+            });
+        return View(results);
     }
     public IActionResult Details(int id)
     {
