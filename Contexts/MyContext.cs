@@ -1,5 +1,6 @@
 ﻿using MCC75NET.Models;
 using Microsoft.EntityFrameworkCore;
+using MCC75NET.ViewModels;
 
 namespace MCC75NET.Contexts
 {
@@ -20,12 +21,17 @@ namespace MCC75NET.Contexts
         // Fluent API
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<Employee>().HasAlternateKey(e => new
+            //base.OnModelCreating(modelBuilder);
+            //modelBuilder.Entity<Employee>().HasAlternateKey(e => new
+            //{
+            //    e.Email,
+            //    e.PhoneNumber
+            //});
+            modelBuilder.Entity<Employee>().HasIndex(e => new
             {
                 e.Email,
                 e.PhoneNumber
-            });
+            }).IsUnique();
 
             // Relasi one Employee ke one Account sekaligus menjadi Primary Key
             modelBuilder.Entity<Employee>()
@@ -33,5 +39,8 @@ namespace MCC75NET.Contexts
                 .WithOne(a => a.Employee)
                 .HasForeignKey<Account>(fk => fk.EmployeeNIK);
         }
+
+        // Fluent API
+        public DbSet<MCC75NET.ViewModels.RegisterVM> RegisterVM { get; set; }
     }
 }
