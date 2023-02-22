@@ -3,7 +3,9 @@ using MCC75NET.Models;
 using MCC75NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
 namespace MCC75NET.Controllers;
 public class AccountController : Controller
@@ -54,7 +56,7 @@ public class AccountController : Controller
         return View();
     }
 
-    public IActionResult Edit(int id)
+    public IActionResult Edit(string id)
     {
         var account = context.Accounts.Find(id);
         return View(account);
@@ -118,19 +120,22 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Bikin kondisi untuk mengecek apakah data university sudah ada
-            //if (context.Universities.Any())
-            //{
-            //    return View();
-            //}
-            
             University university = new University
             {
                 Name = registerVM.UniversityName
             };
-            context.Universities.Add(university);
-            context.SaveChanges();
-
+            // Bikin kondisi untuk mengecek apakah data university sudah ada
+            if (context.Universities.Any(u => u.Name == registerVM.UniversityName))
+            {
+                university.Id = context.Universities.FirstOrDefault(
+                    u => u.Name == registerVM.UniversityName).Id;
+            }
+            else
+            {
+                context.Universities.Add(university);
+                context.SaveChanges();
+            }
+            
             Education education = new Education
             {
                 Major = registerVM.Major,
@@ -199,26 +204,22 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Login(LoginVM loginVM)
     {
-        if (ModelState.IsValid)
+        var getAccounts = context.Accounts.Join(
+        context.Employees,
+        a => a.EmployeeNIK,
+        e => e.NIK,
+        (a, e) => new LoginVM
         {
-            Employee employee = new Employee();
-            //{
-            //    Email = loginVM.Email
-            //};
-            Account account = new Account();
-            //{
-            //    Password = loginVM.Password
-            //};
-            if (loginVM.Email == employee.Email)
-            {
-                if (loginVM.Password == account.Password)
-                {
-                    return RedirectToAction("Index", "Home");
-                }
-            }
+            Email = e.Email,
+            Password = a.Password
+        });
+
+        if (getAccounts.Any(e => e.Email == loginVM.Email && e.Password == loginVM.Password))
+        {
+            return RedirectToAction("Index", "Home");
         }
+        ModelState.AddModelError(string.Empty, "E-Mail or Password Not Found!");
 
         return View();
     }
 }
-
