@@ -1,26 +1,27 @@
 ﻿using MCC75NET.Contexts;
 using MCC75NET.Models;
+using MCC75NET.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace MCC75NET.Controllers;
 public class RoleController : Controller
 {
-    private readonly MyContext context;
+    private readonly RoleRepository roleRepository;
 
-    public RoleController(MyContext context)
+    public RoleController(RoleRepository roleRepository)
     {
-        this.context = context;
+        this.roleRepository = roleRepository;
     }
 
     public IActionResult Index()
     {
-        var roles = context.Roles.ToList();
+        var roles = roleRepository.GetAll();
         return View(roles);
     }
     public IActionResult Details(int id)
     {
-        var role = context.Roles.Find(id);
+        var role = roleRepository.GetById(id);
         return View(role);
     }
 
@@ -33,8 +34,7 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Role role)
     {
-        context.Add(role);
-        var result = context.SaveChanges();
+        var result = roleRepository.Insert(role);
         if (result > 0)
             return RedirectToAction(nameof(Index));
         return View();
@@ -42,7 +42,7 @@ public class RoleController : Controller
 
     public IActionResult Edit(int id)
     {
-        var role = context.Roles.Find(id);
+        var role = roleRepository.GetById(id);
         return View(role);
     }
 
@@ -50,8 +50,7 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Role role)
     {
-        context.Entry(role).State = EntityState.Modified;
-        var result = context.SaveChanges();
+        var result = roleRepository.Update(role);
         if (result > 0)
         {
             return RedirectToAction(nameof(Index));
@@ -61,7 +60,7 @@ public class RoleController : Controller
 
     public IActionResult Delete(int id)
     {
-        var role = context.Roles.Find(id);
+        var role = roleRepository.GetById(id);
         return View(role);
     }
 
@@ -69,9 +68,7 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(int id)
     {
-        var role = context.Roles.Find(id);
-        context.Remove(role);
-        var result = context.SaveChanges();
+        var result = roleRepository.Delete(id);
         if (result > 0)
         {
             return RedirectToAction(nameof(Index));

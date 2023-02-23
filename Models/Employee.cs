@@ -28,7 +28,9 @@ public class Employee
     public DateTime HiringDate { get; set; } = DateTime.Now;
     [Display(Name = "E-Mail")]
     [Required, Column("email"), MaxLength(50)]
+    [EmailAddress]
     public string Email { get; set; }
+    [Phone]
     [Display(Name = "Phone Number")]
     [Column("phone_number"), MaxLength(20)]
     public string? PhoneNumber { get; set; }
