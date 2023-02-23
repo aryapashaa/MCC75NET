@@ -24,6 +24,7 @@ public class AccountRepository : IRepository<string, Account>
         this.educationRepository = educationRepository;
         this.employeeRepository = employeeRepository;
     }
+
     public int Delete(string nik)
     {
         int result = 0;
@@ -39,7 +40,6 @@ public class AccountRepository : IRepository<string, Account>
 
         return result;
     }
-
     public List<Account> GetAll()
     {
         return context.Accounts.ToList() ?? null;
@@ -56,7 +56,6 @@ public class AccountRepository : IRepository<string, Account>
 
         return result;
     }
-
     public int Update(Account entity)
     {
         int result = 0;
@@ -103,7 +102,6 @@ public class AccountRepository : IRepository<string, Account>
 
         return result;
     }
-
     public int Register(RegisterVM entity)
     {
         int result = 0;
@@ -176,7 +174,6 @@ public class AccountRepository : IRepository<string, Account>
 
         return result;
     }
-
     public bool Login(LoginVM entity)
     {
         var getAccounts = context.Accounts.Join(
