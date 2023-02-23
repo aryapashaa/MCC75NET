@@ -138,10 +138,22 @@ public class AccountController : Controller
     {
         if (accountRepository.Login(loginVM))
         {
+            var userdata = accountRepository.GetUserdata(loginVM.Email);
+
+            HttpContext.Session.SetString("email", userdata.Email);
+            HttpContext.Session.SetString("fullName", userdata.FullName);
+            HttpContext.Session.SetString("role", userdata.Role);
+
             return RedirectToAction("Index", "Home");
         }
         ModelState.AddModelError(string.Empty, "E-Mail or Password Not Found!");
 
         return View();
+    }
+
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction(nameof(Index), "Home");
     }
 }

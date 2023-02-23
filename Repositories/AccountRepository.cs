@@ -16,7 +16,7 @@ public class AccountRepository : IRepository<string, Account>
     private readonly EducationRepository educationRepository;
     private readonly EmployeeRepository employeeRepository;
 
-    public AccountRepository(MyContext context, UniversityRepository universityRepository, 
+    public AccountRepository(MyContext context, UniversityRepository universityRepository,
         EducationRepository educationRepository, EmployeeRepository employeeRepository)
     {
         this.context = context;
@@ -187,5 +187,44 @@ public class AccountRepository : IRepository<string, Account>
         });
 
         return getAccounts.Any(e => e.Email == entity.Email && e.Password == entity.Password);
+    }
+
+    public UserdataVM GetUserdata(string email)
+    {
+        //var userdata = context.Employees.Join(
+        //    context.Accounts,
+        //    e => e.NIK,
+        //    a => a.EmployeeNIK,
+        //    (e, a) => new { e, a }).Join(
+        //    context.AccountRoles,
+        //    ea => ea.a.EmployeeNIK,
+        //    ar => ar.AccountNIK,
+        //    (ea, ar) => new { ea, ar }).Join(
+        //    context.Roles,
+        //    eaar => eaar.ar.RoleId,
+        //    r => r.Id,
+        //    (eaar, r) => new UserdataVM
+        //    {
+        //        Email = eaar.ea.e.Email,
+        //        FullName = String.Concat(eaar.ea.e.FirstName, eaar.ea.e.LastName),
+        //        Role = r.Name
+        //    }).FirstOrDefault(u => u.Email == email);
+
+        var userdata = (from e in context.Employees
+                                   join a in context.Accounts
+                                   on e.NIK equals a.EmployeeNIK
+                                   join ar in context.AccountRoles
+                                   on a.EmployeeNIK equals ar.AccountNIK
+                                   join r in context.Roles
+                                   on ar.RoleId equals r.Id
+                                   where e.Email == email
+                                   select new UserdataVM
+                                   {
+                                       Email = e.Email,
+                                       FullName = String.Concat(e.FirstName, " ", e.LastName),
+                                       Role = r.Name
+                                   }).FirstOrDefault();
+
+        return userdata;
     }
 }
