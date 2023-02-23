@@ -68,6 +68,7 @@ public class AccountRepository : IRepository<string, Account>
 
     public List<AccountEmployeeVM> GetAccountEmployees()
     {
+        // Method Syntax
         var results = (context.Accounts.Join(
             context.Employees,
             a => a.EmployeeNIK,
@@ -79,6 +80,17 @@ public class AccountRepository : IRepository<string, Account>
             })).ToList();
 
         return results;
+
+        // Query Syntax
+        //var results = (from a in GetAll()
+        //               join e in empRepository.GetAll()
+        //               on a.EmployeeNIK equals e.NIK
+        //               select new AccountEmployeeVM
+        //               {
+        //                   Email = e.Email,
+        //                   Password = a.Password
+        //               }).ToList();
+        //return results;
     }
     public AccountEmployeeVM GetByIdAccount(string key)
     {
