@@ -11,14 +11,12 @@ using NuGet.Protocol.Core.Types;
 namespace MCC75NET.Controllers;
 public class EducationController : Controller
 {
-    private readonly MyContext context;
     private readonly EducationRepository educationRepository;
     private readonly UniversityRepository universityRepository;
 
-    public EducationController(MyContext context, EducationRepository educationRepository,
+    public EducationController(EducationRepository educationRepository,
         UniversityRepository universityRepository)
     {
-        this.context = context;
         this.educationRepository = educationRepository;
         this.universityRepository = universityRepository;
     }
@@ -72,15 +70,7 @@ public class EducationController : Controller
             });
         ViewBag.University = universities;
 
-        var educations = educationRepository.GetById(id);
-        return View(new EducationUniversityVM
-        {
-            Id = educations.Id,
-            Degree = educations.Degree,
-            GPA = educations.GPA,
-            Major = educations.Major,
-            UniversityName = context.Universities.Find(educations.UniversityId).Name
-        });
+        return View(educationRepository.GetByIdEducations(id));
     }
 
     [HttpPost]
@@ -111,7 +101,7 @@ public class EducationController : Controller
             Degree = educations.Degree,
             GPA = educations.GPA,
             Major = educations.Major,
-            UniversityName = context.Universities.Find(educations.UniversityId).Name
+            UniversityName = universityRepository.GetById(educations.UniversityId).Name
         });
     }
 
@@ -128,6 +118,6 @@ public class EducationController : Controller
         {
             return RedirectToAction(nameof(Index));
         }
-        return View();
+        return RedirectToAction(nameof(Delete));
     }
 }
