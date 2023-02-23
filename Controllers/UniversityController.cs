@@ -77,6 +77,6 @@ public class UniversityController : Controller
         {
             return RedirectToAction(nameof(Index));
         }
-        return View();
+        return RedirectToAction(nameof(Delete));
     }
 }

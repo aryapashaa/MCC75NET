@@ -24,7 +24,7 @@ public class AccountRepository : IRepository<string, Account>
         this.educationRepository = educationRepository;
         this.employeeRepository = employeeRepository;
     }
-    public int Delete(string key)
+    public int Delete(string nik)
     {
         int result = 0;
         var account = GetById;
@@ -80,13 +80,13 @@ public class AccountRepository : IRepository<string, Account>
 
         return results;
     }
-    public AccountEmployeeVM GetByIdEmployee(string key)
+    public AccountEmployeeVM GetByIdAccount(string key)
     {
         var accounts = GetById(key);
         var result = new AccountEmployeeVM
         {
-            Password = accounts.Password,
             EmployeeEmail = employeeRepository.GetById(accounts.EmployeeNIK).Email,
+            Password = accounts.Password,
         };
 
         return result;
@@ -165,9 +165,8 @@ public class AccountRepository : IRepository<string, Account>
         return result;
     }
 
-    public int Login(LoginVM entity)
+    public bool Login(LoginVM entity)
     {
-        int result = 0;
         var getAccounts = context.Accounts.Join(
         context.Employees,
         a => a.EmployeeNIK,
@@ -178,8 +177,6 @@ public class AccountRepository : IRepository<string, Account>
             Password = a.Password
         });
 
-        return result;
-
-        var checkCondition = getAccounts.Any(e => e.Email == entity.Email && e.Password == entity.Password);
+        return getAccounts.Any(e => e.Email == entity.Email && e.Password == entity.Password);
     }
 }

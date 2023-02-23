@@ -76,6 +76,6 @@ public class EmployeeController : Controller
         {
             return RedirectToAction(nameof(Index));
         }
-        return View();
+        return RedirectToAction(nameof(Delete));
     }
 }

@@ -11,13 +11,13 @@ using System.ComponentModel.DataAnnotations;
 namespace MCC75NET.Controllers;
 public class AccountController : Controller
 {
-    private readonly MyContext context;
     private readonly AccountRepository accountRepository;
+    private readonly EmployeeRepository employeeRepository;
 
-    public AccountController(MyContext context, AccountRepository accountRepository)
+    public AccountController(AccountRepository accountRepository, EmployeeRepository employeeRepository)
     {
-        this.context = context;
         this.accountRepository = accountRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     public IActionResult Index()
@@ -25,61 +25,69 @@ public class AccountController : Controller
         var results = accountRepository.GetAccountEmployees();
         return View(results);
     }
-    public IActionResult Details(string id)
-    {
-        return View(accountRepository.GetByIdEmployee(id));
-    }
+    //public IActionResult Details(string id)
+    //{
+    //    return View(accountRepository.GetByIdAccount(id));
+    //}
 
-    public IActionResult Create()
-    {
-        return View();
-    }
+    //public IActionResult Create()
+    //{
+    //    return View();
+    //}
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Create(Account account)
-    {
-        var result = accountRepository.Insert(account);
-        if (result > 0)
-            return RedirectToAction(nameof(Index));
-        return View();
-    }
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public IActionResult Create(Account account)
+    //{
+    //    var result = accountRepository.Insert(account);
+    //    if (result > 0)
+    //        return RedirectToAction(nameof(Index));
+    //    return View();
+    //}
 
-    public IActionResult Edit(string id)
-    {
-        var account = accountRepository.GetById(id);
-        return View(account);
-    }
+    //public IActionResult Edit(string id)
+    //{
+    //    var account = accountRepository.GetById(id);
+    //    return View(account);
+    //}
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Edit(Account account)
-    {
-        var result = accountRepository.Update(account);
-        if (result > 0)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        return View();
-    }
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public IActionResult Edit(Account account)
+    //{
+    //    var result = accountRepository.Update(account);
+    //    if (result > 0)
+    //    {
+    //        return RedirectToAction(nameof(Index));
+    //    }
+    //    return View();
+    //}
 
-    public IActionResult Delete(string id)
-    {
-        var account = accountRepository.GetById(id);
-        return View(account);
-    }
+    //public IActionResult Delete(string id)
+    //{
+    //    var account = accountRepository.GetById(id);
+    //    return View(new AccountEmployeeVM
+    //    {
+    //        Password = account.Password,
+    //        EmployeeEmail =  employeeRepository.GetById(account.EmployeeNIK).Email,
+    //    });
+    //}
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult Remove(string id)
-    {
-        var result = accountRepository.Delete(id);
-        if (result > 0)
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        return View();
-    }
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public IActionResult Remove(string nik)
+    //{
+    //    var result = accountRepository.Delete(nik);
+    //    if (result == 0)
+    //    {
+    //        // Data Tidak Ditemukan
+    //    }
+    //    else
+    //    {
+    //        return RedirectToAction(nameof(Index));
+    //    }
+    //    return RedirectToAction(nameof(Delete));
+    //}
 
     // GET : Account/Register
     public IActionResult Register()
@@ -128,17 +136,7 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Login(LoginVM loginVM)
     {
-        var getAccounts = context.Accounts.Join(
-        context.Employees,
-        a => a.EmployeeNIK,
-        e => e.NIK,
-        (a, e) => new LoginVM
-        {
-            Email = e.Email,
-            Password = a.Password
-        });
-
-        if (getAccounts.Any(e => e.Email == loginVM.Email && e.Password == loginVM.Password))
+        if (accountRepository.Login(loginVM))
         {
             return RedirectToAction("Index", "Home");
         }
