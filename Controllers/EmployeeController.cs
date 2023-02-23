@@ -1,28 +1,30 @@
 ﻿using MCC75NET.Contexts;
 using MCC75NET.Models;
+using MCC75NET.Repositories;
 using MCC75NET.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace MCC75NET.Controllers;
 public class EmployeeController : Controller
 {
-    private readonly MyContext context;
+    private readonly EmployeeRepository employeeRepository;
 
-    public EmployeeController(MyContext context)
+    public EmployeeController(EmployeeRepository employeeRepository)
     {
-        this.context = context;
+        this.employeeRepository = employeeRepository;
     }
 
     public IActionResult Index()
     {
-        var employees = context.Employees.ToList();
+        var employees = employeeRepository.GetAll();
         return View(employees);
     }
     public IActionResult Details(string id)
     {
-        var employee = context.Employees.Find(id);
+        var employee = employeeRepository.GetById(id);
         return View(employee);
     }
 
@@ -35,8 +37,7 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Employee employee)
     {
-        context.Add(employee);
-        var result = context.SaveChanges();
+        var result = employeeRepository.Insert(employee);
         if (result > 0)
             return RedirectToAction(nameof(Index));
         return View();
@@ -44,7 +45,7 @@ public class EmployeeController : Controller
 
     public IActionResult Edit(string id)
     {
-        var employee = context.Employees.Find(id);
+        var employee = employeeRepository.GetById(id);
         return View(employee);
     }
 
@@ -52,8 +53,7 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Employee employee)
     {
-        context.Entry(employee).State = EntityState.Modified;
-        var result = context.SaveChanges();
+        var result = employeeRepository.Update(employee);
         if (result > 0)
         {
             return RedirectToAction(nameof(Index));
@@ -63,7 +63,7 @@ public class EmployeeController : Controller
 
     public IActionResult Delete(string id)
     {
-        var employee = context.Employees.Find(id);
+        var employee = employeeRepository.GetById(id);
         return View(employee);
     }
 
@@ -71,9 +71,7 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(string nik)
     {
-        var employee = context.Employees.Find(nik);
-        context.Remove(employee);
-        var result = context.SaveChanges();
+        var result = employeeRepository.Delete(nik);
         if (result > 0)
         {
             return RedirectToAction(nameof(Index));
