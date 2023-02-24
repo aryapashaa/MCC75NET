@@ -35,6 +35,10 @@ public class UniversityController : Controller
 
     public IActionResult Create()
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -46,6 +50,10 @@ public class UniversityController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(University university)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -58,6 +66,10 @@ public class UniversityController : Controller
 
     public IActionResult Edit(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -70,6 +82,10 @@ public class UniversityController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(University university)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -84,6 +100,10 @@ public class UniversityController : Controller
 
     public IActionResult Delete(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -96,6 +116,10 @@ public class UniversityController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");

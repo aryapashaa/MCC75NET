@@ -19,6 +19,10 @@ public class EmployeeController : Controller
 
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -28,6 +32,10 @@ public class EmployeeController : Controller
     }
     public IActionResult Details(string id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -38,6 +46,10 @@ public class EmployeeController : Controller
 
     public IActionResult Create()
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -49,6 +61,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Employee employee)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -61,6 +77,10 @@ public class EmployeeController : Controller
 
     public IActionResult Edit(string id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -73,6 +93,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Employee employee)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -87,6 +111,10 @@ public class EmployeeController : Controller
 
     public IActionResult Delete(string id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -99,6 +127,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(string nik)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");

@@ -16,6 +16,10 @@ public class RoleController : Controller
 
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -25,6 +29,10 @@ public class RoleController : Controller
     }
     public IActionResult Details(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -35,6 +43,10 @@ public class RoleController : Controller
 
     public IActionResult Create()
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -46,6 +58,10 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Role role)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -58,6 +74,10 @@ public class RoleController : Controller
 
     public IActionResult Edit(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -70,6 +90,10 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Role role)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -84,6 +108,10 @@ public class RoleController : Controller
 
     public IActionResult Delete(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
@@ -96,6 +124,10 @@ public class RoleController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(int id)
     {
+        if (HttpContext.Session.GetString("email") == null)
+        {
+            return RedirectToAction("Unauthorized", "Error");
+        }
         if (HttpContext.Session.GetString("role") != "Admin")
         {
             return RedirectToAction("Forbidden", "Error");
