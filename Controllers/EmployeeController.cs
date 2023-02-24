@@ -19,17 +19,29 @@ public class EmployeeController : Controller
 
     public IActionResult Index()
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var employees = employeeRepository.GetAll();
         return View(employees);
     }
     public IActionResult Details(string id)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var employee = employeeRepository.GetById(id);
         return View(employee);
     }
 
     public IActionResult Create()
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         return View();
     }
 
@@ -37,6 +49,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Create(Employee employee)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var result = employeeRepository.Insert(employee);
         if (result > 0)
             return RedirectToAction(nameof(Index));
@@ -45,6 +61,10 @@ public class EmployeeController : Controller
 
     public IActionResult Edit(string id)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var employee = employeeRepository.GetById(id);
         return View(employee);
     }
@@ -53,6 +73,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Edit(Employee employee)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var result = employeeRepository.Update(employee);
         if (result > 0)
         {
@@ -63,6 +87,10 @@ public class EmployeeController : Controller
 
     public IActionResult Delete(string id)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var employee = employeeRepository.GetById(id);
         return View(employee);
     }
@@ -71,6 +99,10 @@ public class EmployeeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult Remove(string nik)
     {
+        if (HttpContext.Session.GetString("role") != "Admin")
+        {
+            return RedirectToAction("Forbidden", "Error");
+        }
         var result = employeeRepository.Delete(nik);
         if (result > 0)
         {
