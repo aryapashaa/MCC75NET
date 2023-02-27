@@ -287,3 +287,4 @@ D:\Profile\Arya\ARYA PASHA GUNAWAN\mcc\TRAINING\Project\MCC75NET\MCC75NET\bin\De
 D:\Profile\Arya\ARYA PASHA GUNAWAN\mcc\TRAINING\Project\MCC75NET\MCC75NET\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 D:\Profile\Arya\ARYA PASHA GUNAWAN\mcc\TRAINING\Project\MCC75NET\MCC75NET\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Security.Cryptography.ProtectedData.dll
 D:\Profile\Arya\ARYA PASHA GUNAWAN\mcc\TRAINING\Project\MCC75NET\MCC75NET\bin\Debug\net6.0\runtimes\win\lib\net6.0\System.Windows.Extensions.dll
+D:\Profile\Arya\ARYA PASHA GUNAWAN\mcc\TRAINING\Project\MCC75NET\MCC75NET\bin\Debug\net6.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

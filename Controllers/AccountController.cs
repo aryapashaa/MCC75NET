@@ -6,18 +6,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Core.Types;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace MCC75NET.Controllers;
 public class AccountController : Controller
 {
     private readonly AccountRepository accountRepository;
     private readonly EmployeeRepository employeeRepository;
+    private readonly IConfiguration configuration;
 
-    public AccountController(AccountRepository accountRepository, EmployeeRepository employeeRepository)
+    public AccountController(AccountRepository accountRepository, EmployeeRepository employeeRepository, IConfiguration configuration)
     {
         this.accountRepository = accountRepository;
         this.employeeRepository = employeeRepository;
+        this.configuration = configuration;
     }
 
     public IActionResult Index()
@@ -25,69 +32,6 @@ public class AccountController : Controller
         var results = accountRepository.GetAccountEmployees();
         return View(results);
     }
-    //public IActionResult Details(string id)
-    //{
-    //    return View(accountRepository.GetByIdAccount(id));
-    //}
-
-    //public IActionResult Create()
-    //{
-    //    return View();
-    //}
-
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult Create(Account account)
-    //{
-    //    var result = accountRepository.Insert(account);
-    //    if (result > 0)
-    //        return RedirectToAction(nameof(Index));
-    //    return View();
-    //}
-
-    //public IActionResult Edit(string id)
-    //{
-    //    var account = accountRepository.GetById(id);
-    //    return View(account);
-    //}
-
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult Edit(Account account)
-    //{
-    //    var result = accountRepository.Update(account);
-    //    if (result > 0)
-    //    {
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return View();
-    //}
-
-    //public IActionResult Delete(string id)
-    //{
-    //    var account = accountRepository.GetById(id);
-    //    return View(new AccountEmployeeVM
-    //    {
-    //        Password = account.Password,
-    //        EmployeeEmail =  employeeRepository.GetById(account.EmployeeNIK).Email,
-    //    });
-    //}
-
-    //[HttpPost]
-    //[ValidateAntiForgeryToken]
-    //public IActionResult Remove(string nik)
-    //{
-    //    var result = accountRepository.Delete(nik);
-    //    if (result == 0)
-    //    {
-    //        // Data Tidak Ditemukan
-    //    }
-    //    else
-    //    {
-    //        return RedirectToAction(nameof(Index));
-    //    }
-    //    return RedirectToAction(nameof(Delete));
-    //}
 
     // GET : Account/Register
     public IActionResult Register()
@@ -139,10 +83,32 @@ public class AccountController : Controller
         if (accountRepository.Login(loginVM))
         {
             var userdata = accountRepository.GetUserdata(loginVM.Email);
+            var roles = accountRepository.GetRolesByNIK(loginVM.Email);
 
-            HttpContext.Session.SetString("email", userdata.Email);
-            HttpContext.Session.SetString("fullName", userdata.FullName);
-            HttpContext.Session.SetString("role", userdata.Role);
+            var claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.Email, userdata.Email),
+                new Claim(ClaimTypes.Name, userdata.FullName)
+            };
+
+            foreach (var item in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, item));
+            }
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]));
+            var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var token = new JwtSecurityToken(
+                issuer: configuration["JWT:Issuer"],
+                audience: configuration["JWT:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(10),
+                signingCredentials: signIn
+                );
+
+            var generateToken = new JwtSecurityTokenHandler().WriteToken(token);
+
+            HttpContext.Session.SetString("jwtoken", generateToken);
 
             return RedirectToAction("Index", "Home");
         }

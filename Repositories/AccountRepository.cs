@@ -156,7 +156,7 @@ public class AccountRepository : IRepository<string, Account>
         AccountRole accountRole = new AccountRole
         {
             AccountNIK = entity.NIK,
-            RoleId = 3
+            RoleId = 2
         };
         context.AccountRoles.Add(accountRole);
         context.SaveChanges();
@@ -211,20 +211,28 @@ public class AccountRepository : IRepository<string, Account>
         //    }).FirstOrDefault(u => u.Email == email);
 
         var userdata = (from e in context.Employees
-                                   join a in context.Accounts
-                                   on e.NIK equals a.EmployeeNIK
-                                   join ar in context.AccountRoles
-                                   on a.EmployeeNIK equals ar.AccountNIK
-                                   join r in context.Roles
-                                   on ar.RoleId equals r.Id
-                                   where e.Email == email
-                                   select new UserdataVM
-                                   {
-                                       Email = e.Email,
-                                       FullName = String.Concat(e.FirstName, " ", e.LastName),
-                                       Role = r.Name
-                                   }).FirstOrDefault();
+                        join a in context.Accounts
+                        on e.NIK equals a.EmployeeNIK
+                        join ar in context.AccountRoles
+                        on a.EmployeeNIK equals ar.AccountNIK
+                        join r in context.Roles
+                        on ar.RoleId equals r.Id
+                        where e.Email == email
+                        select new UserdataVM
+                        {
+                            Email = e.Email,
+                            FullName = String.Concat(e.FirstName, " ", e.LastName)
+                        }).FirstOrDefault();
 
         return userdata;
+    }
+    public List<string> GetRolesByNIK(string email)
+    {
+        var getNIK = context.Employees.FirstOrDefault(e => e.Email == email);
+        return context.AccountRoles.Where(ar => ar.AccountNIK == getNIK.NIK).Join(
+            context.Roles,
+            ar => ar.RoleId,
+            r => r.Id,
+            (ar, r) => r.Name).ToList();
     }
 }
