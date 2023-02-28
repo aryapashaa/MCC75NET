@@ -1,4 +1,5 @@
 ﻿using MCC75NET.Contexts;
+using MCC75NET.Handler;
 using MCC75NET.Models;
 using MCC75NET.Repositories.Interface;
 using MCC75NET.ViewModels;
@@ -148,7 +149,7 @@ public class AccountRepository : IRepository<string, Account>
         Account account = new Account
         {
             EmployeeNIK = entity.NIK,
-            Password = entity.Password
+            Password = Hashing.HashPassword(entity.Password)
         };
         context.Accounts.Add(account);
         context.SaveChanges();
@@ -183,10 +184,15 @@ public class AccountRepository : IRepository<string, Account>
         (a, e) => new LoginVM
         {
             Email = e.Email,
-            Password = a.Password
-        });
+            Password = a.Password,
+        }).SingleOrDefault(a => a.Email == entity.Email);
 
-        return getAccounts.Any(e => e.Email == entity.Email && e.Password == entity.Password);
+        if (getAccounts is null)
+        {
+            return false;
+        }
+
+        return Hashing.ValidatePassword(entity.Password, getAccounts.Password);
     }
 
     public UserdataVM GetUserdata(string email)
